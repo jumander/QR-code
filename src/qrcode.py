@@ -14,6 +14,9 @@ class Block:
 
 
 class QRCode:
-  def __init__(self, size, state=False):
-    self.size = size
-    self.board = [[Block(state) for x in range(size)] for y in range(size)]
+  def __init__(self, version, state=False):
+    assert(isinstance(version, int))
+    assert(version >= 1 and version <= 40)
+    self.version = version
+    self.size = version * 4 + 17
+    self.board = [[Block(state) for x in range(self.size)] for y in range(self.size)]
