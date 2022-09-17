@@ -67,10 +67,50 @@ def add_trackers(code):
   code.board[code.size-8][8].reserved = True
   code.board[code.size-8][8].state = False
 
+def retrieve_data_path(code):
+
+  # Reserve space for format
+  reserve_rect(code, (0, 0), (8, 8))
+  reserve_rect(code, (8, code.size-7), (8, code.size-1))
+  reserve_rect(code, (code.size-8, 8), (code.size-1, 8))
+  if code.version >= 7:
+    reserve_rect(code, (0, code.size-11), (6, code.size-8))
+    reserve_rect(code, (code.size-11, 0), (code.size-8, 6))
+
+  data_path = []
+
+  dir = -1 # -1 is upwards
+  x, y = (code.size-1, code.size-1)
+  sidestep = True
+  while x >= 0:
+    if not code.board[y][x].reserved:
+      data_path.append((x, y))
+    else:
+      pass
+    if sidestep:
+      x -= 1
+    else:
+      if dir < 0 and y == 0:
+        x -= 1 if x != (6+1) else 2
+        dir = 1
+      elif dir > 0 and y == code.size-1:
+        x -= 1
+        dir = -1
+      else:
+        x += 1
+        y += dir
+    sidestep = not sidestep
+  return data_path
+
+def encode_message(code, message):
+  data_path = retrieve_data_path(code)
+  print(len(data_path))
+
 def generate(message):
-  code = QRCode(10, True)
+  code = QRCode(1, True)
 
   add_trackers(code)
+  encode_message(code, message)
 
   print(message)
   return code
