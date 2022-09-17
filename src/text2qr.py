@@ -11,7 +11,13 @@ def show_image(qrcode):
       x = int((i / img.size[0]) * qrcode.size)
       y = int((j / img.size[1]) * qrcode.size)
       state = 255 if qrcode.board[y][x].state else 0
-      pixels[i,j] = (state, state, state)
+      color = (state, state, state)
+      if qrcode.board[y][x].reserved:
+        if qrcode.board[y][x].state:
+          color = (255, 200, 200)
+        else:
+          color = (55, 0, 0)
+      pixels[i,j] = color
   img.show()
 
 
